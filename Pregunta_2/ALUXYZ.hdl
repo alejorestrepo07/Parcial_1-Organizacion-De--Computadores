@@ -1,0 +1,39 @@
+/**
+ * ALU_XYZ.hdl
+ * Arquitectura de ALU de 3 entradas (X, Y, Z) de 16 bits.
+ * Operaciones segun los selectores f1, f0:
+ * 00: X + Y + Z
+ * 01: X AND Y AND Z
+ * 10: (X + Y) - Z
+ * 11: (X AND Y) OR Z
+ */
+ 
+CHIP ALUXYZ {
+    // Definicion de variables en ingles en la parte superior
+    IN x[16], y[16], z[16], f1, f0;
+    OUT out[16];
+
+    PARTS:
+    // 1. Nivel de procesamiento X y Y
+    Add16(a=x, b=y, out=addXY);
+    And16(a=x, b=y, out=andXY);
+
+    // 2. Nivel de procesamiento con Z (Arquitectura en Cascada)
+    // Suma total: $X+Y+Z$
+    Add16(a=addXY, b=z, out=addXYZ);
+
+    // AND masivo: X AND Y AND Z
+    And16(a=andXY, b=z, out=andXYZ);
+
+    // Resta hibrida: $(X+Y)-Z$
+    // Complemento a 2 de Z para sumar negativos
+    Not16(in=z, out=notZ);
+    Inc16(in=notZ, out=negZ);
+    Add16(a=addXY, b=negZ, out=subXYZ);
+
+    // OR hibrido: $(X \text{ AND } Y) \text{ OR } Z$
+    Or16(a=andXY, b=z, out=orXYZ);
+
+    // 3. Seleccion final de la operacion
+    Mux4Way16(a=addXYZ, b=andXYZ, c=subXYZ, d=orXYZ, sel[0]=f0, sel[1]=f1, out=out);
+}

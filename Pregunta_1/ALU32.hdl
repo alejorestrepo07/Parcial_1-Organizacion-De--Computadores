@@ -1,0 +1,51 @@
+CHIP ALU32 {
+    IN  
+        xLow[16], xHigh[16], 
+        yLow[16], yHigh[16], 
+        zx, nx, zy, ny, f, no;
+    OUT 
+        outLow[16], outHigh[16], 
+        zr, ng;
+
+    PARTS:
+    // Pre-procesamiento de X (Mitad baja y mitad alta)
+    Mux16(a=xLow, b=false, sel=zx, out=xL1);
+    Mux16(a=xHigh, b=false, sel=zx, out=xH1);
+    Not16(in=xL1, out=nxL1);
+    Not16(in=xH1, out=nxH1);
+    Mux16(a=xL1, b=nxL1, sel=nx, out=xL2);
+    Mux16(a=xH1, b=nxH1, sel=nx, out=xH2);
+
+    // Pre-procesamiento de Y (Mitad baja y mitad alta)
+    Mux16(a=yLow, b=false, sel=zy, out=yL1);
+    Mux16(a=yHigh, b=false, sel=zy, out=yH1);
+    Not16(in=yL1, out=nyL1);
+    Not16(in=yH1, out=nyH1);
+    Mux16(a=yL1, b=nyL1, sel=ny, out=yL2);
+    Mux16(a=yH1, b=nyH1, sel=ny, out=yH2);
+
+    // Operación principal (f)
+    Add32(aLow=xL2, aHigh=xH2, bLow=yL2, bHigh=yH2, outLow=addL, outHigh=addH);
+    And16(a=xL2, b=yL2, out=andL);
+    And16(a=xH2, b=yH2, out=andH);
+    Mux16(a=andL, b=addL, sel=f, out=fL);
+    Mux16(a=andH, b=addH, sel=f, out=fH);
+
+    // Post-procesamiento (no)
+    Not16(in=fL, out=nfL);
+    Not16(in=fH, out=nfH);
+    
+    // Salidas y extracción de banderas seguras
+    Mux16(a=fL, b=nfL, sel=no, out=outLow, out[0..7]=outL07, out[8..15]=outL815);
+    Mux16(a=fH, b=nfH, sel=no, out=outHigh, out[15]=ng, out[0..7]=outH07, out[8..15]=outH815);
+
+    // Bandera de cero (zr) - Sumamos las 4 partes
+    Or8Way(in=outL07, out=or1);
+    Or8Way(in=outL815, out=or2);
+    Or8Way(in=outH07, out=or3);
+    Or8Way(in=outH815, out=or4);
+    Or(a=or1, b=or2, out=or12);
+    Or(a=or3, b=or4, out=or34);
+    Or(a=or12, b=or34, out=orFinal);
+    Not(in=orFinal, out=zr);
+}

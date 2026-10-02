@@ -1,0 +1,41 @@
+CHIP Add32 {
+    IN aLow[16], aHigh[16], bLow[16], bHigh[16];
+    OUT outLow[16], outHigh[16];
+
+    PARTS:
+    
+    HalfAdder(a=aLow[0], b=bLow[0], sum=outLow[0], carry=c0);
+    FullAdder(a=aLow[1], b=bLow[1], c=c0, sum=outLow[1], carry=c1);
+    FullAdder(a=aLow[2], b=bLow[2], c=c1, sum=outLow[2], carry=c2);
+    FullAdder(a=aLow[3], b=bLow[3], c=c2, sum=outLow[3], carry=c3);
+    FullAdder(a=aLow[4], b=bLow[4], c=c3, sum=outLow[4], carry=c4);
+    FullAdder(a=aLow[5], b=bLow[5], c=c4, sum=outLow[5], carry=c5);
+    FullAdder(a=aLow[6], b=bLow[6], c=c5, sum=outLow[6], carry=c6);
+    FullAdder(a=aLow[7], b=bLow[7], c=c6, sum=outLow[7], carry=c7);
+    FullAdder(a=aLow[8], b=bLow[8], c=c7, sum=outLow[8], carry=c8);
+    FullAdder(a=aLow[9], b=bLow[9], c=c8, sum=outLow[9], carry=c9);
+    FullAdder(a=aLow[10], b=bLow[10], c=c9, sum=outLow[10], carry=c10);
+    FullAdder(a=aLow[11], b=bLow[11], c=c10, sum=outLow[11], carry=c11);
+    FullAdder(a=aLow[12], b=bLow[12], c=c11, sum=outLow[12], carry=c12);
+    FullAdder(a=aLow[13], b=bLow[13], c=c12, sum=outLow[13], carry=c13);
+    FullAdder(a=aLow[14], b=bLow[14], c=c13, sum=outLow[14], carry=c14);
+    FullAdder(a=aLow[15], b=bLow[15], c=c14, sum=outLow[15], carry=c15);
+
+   
+    FullAdder(a=aHigh[0], b=bHigh[0], c=c15, sum=outHigh[0], carry=c16);
+    FullAdder(a=aHigh[1], b=bHigh[1], c=c16, sum=outHigh[1], carry=c17);
+    FullAdder(a=aHigh[2], b=bHigh[2], c=c17, sum=outHigh[2], carry=c18);
+    FullAdder(a=aHigh[3], b=bHigh[3], c=c18, sum=outHigh[3], carry=c19);
+    FullAdder(a=aHigh[4], b=bHigh[4], c=c19, sum=outHigh[4], carry=c20);
+    FullAdder(a=aHigh[5], b=bHigh[5], c=c20, sum=outHigh[5], carry=c21);
+    FullAdder(a=aHigh[6], b=bHigh[6], c=c21, sum=outHigh[6], carry=c22);
+    FullAdder(a=aHigh[7], b=bHigh[7], c=c22, sum=outHigh[7], carry=c23);
+    FullAdder(a=aHigh[8], b=bHigh[8], c=c23, sum=outHigh[8], carry=c24);
+    FullAdder(a=aHigh[9], b=bHigh[9], c=c24, sum=outHigh[9], carry=c25);
+    FullAdder(a=aHigh[10], b=bHigh[10], c=c25, sum=outHigh[10], carry=c26);
+    FullAdder(a=aHigh[11], b=bHigh[11], c=c26, sum=outHigh[11], carry=c27);
+    FullAdder(a=aHigh[12], b=bHigh[12], c=c27, sum=outHigh[12], carry=c28);
+    FullAdder(a=aHigh[13], b=bHigh[13], c=c28, sum=outHigh[13], carry=c29);
+    FullAdder(a=aHigh[14], b=bHigh[14], c=c29, sum=outHigh[14], carry=c30);
+    FullAdder(a=aHigh[15], b=bHigh[15], c=c30, sum=outHigh[15]);
+}
